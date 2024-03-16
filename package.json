@@ -1,0 +1,23 @@
+{
+  "name": "texteditor",
+  "version": "1.0.0",
+  "description": "textEditor",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "test": "mocha"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/LPD-6/textEditor.git"
+  },
+  "author": "Liam Davidson",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/LPD-6/textEditor/issues"
+  },
+  "homepage": "https://github.com/LPD-6/textEditor#readme",
+  "devDependencies": {
+    "electron": "^29.1.4"
+  }
+}
