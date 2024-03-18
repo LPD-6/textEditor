@@ -23,7 +23,7 @@ function createWindow() {
           label: 'New File',
           accelerator: 'CmdOrCtrl+N',
           click() {
-            mainWindow.webContents.send('new-file');
+            createWindow();
           }
         },
         {
