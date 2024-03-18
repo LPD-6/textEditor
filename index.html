@@ -19,6 +19,42 @@
       --text-color: white;
     }
 
+    #tabs {
+      display: flex;
+    }
+
+    .tab {
+      padding: 10px 15px;
+      /* Adjust padding as needed */
+      border: 1px solid #ccc;
+      /* Border style */
+      cursor: pointer;
+      /* Cursor style */
+      display: inline-block;
+      /* Display as inline block */
+      margin-right: 5px;
+      /* Margin between tabs */
+      border-top-left-radius: 5px;
+      /* Rounded corners for the first tab */
+      border-top-right-radius: 5px;
+      /* Rounded corners for the last tab */
+    }
+
+    .tab.active {
+      background-color: #f0f0f0;
+      /* Background color when tab is active */
+      border-bottom-color: transparent;
+      /* Hide bottom border when tab is active */
+    }
+
+    .editor {
+      display: none;
+    }
+
+    .editor.active {
+      display: block;
+    }
+
     body,
     html,
     #editor {
@@ -36,7 +72,11 @@
 </head>
 
 <body>
-  <div id="editor" contenteditable="true"></div>
+  <div id="tabs"></div>
+  <div id="editors">
+    <!-- Initial editor div with contenteditable attribute -->
+    <div id="editor" class="editor active" contenteditable="true"></div>
+  </div>
   <script src="renderer.js"></script>
 </body>
 
