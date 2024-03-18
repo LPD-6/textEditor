@@ -72,6 +72,17 @@ function createWindow() {
         { role: 'reload' },
         { role: 'toggleDevTools' }
       ]
+    },
+
+    {
+      label: '&Settings',
+      submenu: [{
+        label: 'Change Theme',
+        click(){
+          mainWindow.webContents.send('change-theme');
+        }
+      }
+      ]
     }
   ]);
 

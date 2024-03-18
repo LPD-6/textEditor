@@ -17,3 +17,7 @@ ipcRenderer.on('save-file', () => {
 ipcRenderer.on('save-file-as', () => {
   ipcRenderer.send('save-file-as', { content: editor.innerText });
 });
+
+ipcRenderer.on('change-theme', () => {
+  document.body.classList.toggle('dark-theme');
+});
