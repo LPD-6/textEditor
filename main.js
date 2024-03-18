@@ -3,7 +3,7 @@ const fs = require('fs');
 
 let mainWindow;
 
-function createWindow () {
+function createWindow() {
   mainWindow = new BrowserWindow({
     width: 800,
     height: 600,
@@ -22,8 +22,8 @@ function createWindow () {
         {
           label: 'New File',
           accelerator: 'CmdOrCtrl+N',
-          click(){
-            mainWindow.createWindow();
+          click() {
+            createWindow();
           }
         },
         {
@@ -36,7 +36,7 @@ function createWindow () {
         {
           label: 'Save',
           accelerator: 'CmdOrCtrl+S',
-          click(){
+          click() {
             mainWindow.webContents.send('save-file');
           }
         },
@@ -47,8 +47,8 @@ function createWindow () {
             mainWindow.webContents.send('save-file-as');
           }
         },
-        {type: 'separator'},
-        {role: 'quit'}
+        { type: 'separator' },
+        { role: 'quit' }
       ]
     },
 
@@ -65,7 +65,7 @@ function createWindow () {
         { role: 'selectAll' }
       ]
     },
-    
+
     {
       label: '&View',
       submenu: [
@@ -80,6 +80,8 @@ function createWindow () {
 
 app.whenReady().then(createWindow);
 
+let currentFilePath = null;
+
 ipcMain.on('open-file', (event) => {
   dialog.showOpenDialog(mainWindow, {
     properties: ['openFile']
@@ -90,7 +92,8 @@ ipcMain.on('open-file', (event) => {
           console.error('Error reading file:', err);
           return;
         }
-        event.reply('file-opened', { path: result.filePaths[0], content: data });
+        currentFilePath = result.filePaths[0];
+        event.reply('file-opened', { path: currentFilePath, content: data });
       });
     }
   }).catch(err => {
@@ -101,28 +104,53 @@ ipcMain.on('open-file', (event) => {
 ipcMain.on('save-file', (event, args) => {
   let content = args.content;
   let lines = content.split('\n');
-  lines = lines.map(line => line + '\n');
+  lines = lines.map((line, index) => {
+    // Don't add a new line character to the last line
+    if (index === lines.length - 1) {
+      return line;
+    } else {
+      return line + '\n';
+    }
+  });
   content = lines.join('');
 
-  dialog.showSaveDialog(mainWindow, {}).then(result => {
-    if (!result.canceled) {
-      fs.writeFile(result.filePath, content, 'utf-8', (err) => {
-        if (err) {
-          console.log("An error occurred while saving the file: " + err.message);
-          return;
-        }
-        console.log("File saved successfully.");
-      });
-    }
-  }).catch(err => {
-    console.error('Error saving file:', err);
-  });
+  if (currentFilePath) {
+    fs.writeFile(currentFilePath, content, 'utf-8', (err) => {
+      if (err) {
+        console.log("An error occurred while saving the file: " + err.message);
+        return;
+      }
+      console.log("File saved successfully.");
+    });
+  } else {
+    dialog.showSaveDialog(mainWindow, {}).then(result => {
+      if (!result.canceled) {
+        fs.writeFile(result.filePath, content, 'utf-8', (err) => {
+          if (err) {
+            console.log("An error occurred while saving the file: " + err.message);
+            return;
+          }
+          currentFilePath = result.filePath;
+          console.log("File saved successfully.");
+        });
+      }
+    }).catch(err => {
+      console.error('Error saving file:', err);
+    });
+  }
 });
 
 ipcMain.on('save-file-as', (event, args) => {
   let content = args.content;
   let lines = content.split('\n');
-  lines = lines.map(line => line + '\n');
+  lines = lines.map((line, index) => {
+    // Don't add a new line character to the last line
+    if (index === lines.length - 1) {
+      return line;
+    } else {
+      return line + '\n';
+    }
+  });
   content = lines.join('');
 
   dialog.showSaveDialog(mainWindow, {}).then(result => {
@@ -132,6 +160,7 @@ ipcMain.on('save-file-as', (event, args) => {
           console.log("An error occurred while saving the file: " + err.message);
           return;
         }
+        currentFilePath = result.filePath;
         console.log("File saved successfully.");
       });
     }

@@ -3,7 +3,7 @@ const { ipcRenderer } = require('electron');
 let editor = document.getElementById('editor');
 
 ipcRenderer.on('file-opened', (event, args) => {
-  editor.textContent = args.content;
+  editor.innerText = args.content;
 });
 
 ipcRenderer.on('open-file', () => {
@@ -11,9 +11,9 @@ ipcRenderer.on('open-file', () => {
 });
 
 ipcRenderer.on('save-file', () => {
-  ipcRenderer.send('save-file', { content: editor.textContent });
+  ipcRenderer.send('save-file', { content: editor.innerText });
 });
 
 ipcRenderer.on('save-file-as', () => {
-  ipcRenderer.send('save-file-as', { content: editor.textContent });
+  ipcRenderer.send('save-file-as', { content: editor.innerText });
 });
