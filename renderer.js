@@ -1,10 +1,19 @@
 const { ipcRenderer } = require('electron');
 
-ipcRenderer.on('file-opened', (event, data) => {
-  document.getElementById('editor').value = data;
+let editor = document.getElementById('editor');
+
+ipcRenderer.on('file-opened', (event, args) => {
+  editor.textContent = args.content;
 });
 
-ipcRenderer.on('save-file', (event, filePath) => {
-  const data = document.getElementById('editor').value;
-  ipcRenderer.send('save-data', filePath, data);
+ipcRenderer.on('open-file', () => {
+  ipcRenderer.send('open-file');
+});
+
+ipcRenderer.on('save-file', () => {
+  ipcRenderer.send('save-file', { content: editor.textContent });
+});
+
+ipcRenderer.on('save-file-as', () => {
+  ipcRenderer.send('save-file-as', { content: editor.textContent });
 });
